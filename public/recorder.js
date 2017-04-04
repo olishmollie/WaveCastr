@@ -1,5 +1,9 @@
 var recorder;
 
+window.onload = function() {
+  App.chat.addMessageToChat(demoStageOne());
+}
+
 start.addEventListener( "click", function(){
   App.recorder.perform("receive", {command: 'start'});
 });
@@ -19,6 +23,7 @@ document.addEventListener('startRecording', function(e) {
 });
 document.addEventListener('stopRecording', function(e) {
   recorder.stop();
+  App.chat.addMessageToChat(demoStageThree());
 });
 document.addEventListener('initRecording', function(e) {
   initRecording();
@@ -32,7 +37,7 @@ function initRecording() {
     $('#flash').flash("Sorry, recording features are not supported in your browser.", { class: 'alert' });
     return;
   }
-
+  
   recorder = new Recorder({
     // Settings like bitrate or sampleRate would go here
     encoderPath: "/recorderjs/encoderWorker.min.js" });
@@ -56,9 +61,9 @@ function initRecording() {
   recorder.addEventListener( "streamReady", function(e){
     stopButton.disabled = true;
     start.disabled = false;
-
     App.appearance.perform("update", {status: 'ready'});
     App.chat.addMessageToChat('SYSTEM: <i>Audio stream ready</i>');
+    App.chat.addMessageToChat(demoStageTwo());
   });
 
   recorder.addEventListener( "dataAvailable", function(e){
@@ -112,4 +117,17 @@ function initRecording() {
     });
   });
   recorder.initStream();
+}
+
+
+function demoStageOne() {
+  return "Welcome to WaveCastr! To see how it works, simply copy the url (we've made it easy with the 'Share Link' button) into an incognito window or another browser, and enter your name.\nOnce you've joined, feel free to try our chat feature, which was built with ActionCable.\n\nOnce you're ready, activate everyone's mics with the button below, and grant any permissions necessary (spoiler: Safari doesn't support our app quite yet).\n\n"
+}
+
+function demoStageTwo() {
+  return "Congrats, your mic is armed and ready to go! Once everyone's permissions have been granted, your guests' icons will turn g reen. Press record, and both browsers will record separate audio tracks for each guest. Push stop, and those tracks will be uploaded to our AWS server and made available to download as soon as they're ready.\n\n"
+}
+
+function demoStageThree() {
+  return "Nice! You've recorded your first podcast with WaveCastr! Once the tracks are ready, you should see links to download them below. You can now upload them to the audio editor of your choice for post-production. Thanks for trying WaveCastr!\n"
 }
