@@ -37,7 +37,7 @@ function initRecording() {
     $('#flash').flash("Sorry, recording features are not supported in your browser.", { class: 'alert' });
     return;
   }
-  
+
   recorder = new Recorder({
     // Settings like bitrate or sampleRate would go here
     encoderPath: "/recorderjs/encoderWorker.min.js" });
@@ -125,7 +125,7 @@ function demoStageOne() {
 }
 
 function demoStageTwo() {
-  return "Congrats, your mic is armed and ready to go! Once everyone's permissions have been granted, your guests' icons will turn g reen. Press record, and both browsers will record separate audio tracks for each guest. Push stop, and those tracks will be uploaded to our AWS server and made available to download as soon as they're ready.\n\n"
+  return "Congrats, your mic is armed and ready to go! Once everyone's permissions have been granted, your guests' icons will turn green. Press record, and both browsers will record separate audio tracks for each guest. Push stop, and those tracks will be uploaded to our AWS server and made available to download as soon as they're ready.\n\n"
 }
 
 function demoStageThree() {
