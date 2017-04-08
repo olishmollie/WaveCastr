@@ -1,7 +1,9 @@
 var recorder;
 
 window.onload = function() {
-  App.chat.addMessageToChat(demoStageOne());
+  App.chat.addMessageToChat(demo_messages[0]);
+  App.chat.addMessageToChat(demo_messages[1]);
+  App.chat.addMessageToChat(demo_messages[2]);
 }
 
 start.addEventListener( "click", function(){
@@ -23,7 +25,7 @@ document.addEventListener('startRecording', function(e) {
 });
 document.addEventListener('stopRecording', function(e) {
   recorder.stop();
-  App.chat.addMessageToChat(demoStageThree());
+  App.chat.addMessageToChat(demo_messages[4]);;
 });
 document.addEventListener('initRecording', function(e) {
   initRecording();
@@ -37,7 +39,7 @@ function initRecording() {
     $('#flash').flash("Sorry, recording features are not supported in your browser.", { class: 'alert' });
     return;
   }
-  
+
   recorder = new Recorder({
     // Settings like bitrate or sampleRate would go here
     encoderPath: "/recorderjs/encoderWorker.min.js" });
@@ -63,7 +65,7 @@ function initRecording() {
     start.disabled = false;
     App.appearance.perform("update", {status: 'ready'});
     App.chat.addMessageToChat('SYSTEM: <i>Audio stream ready</i>');
-    App.chat.addMessageToChat(demoStageTwo());
+    App.chat.addMessageToChat(demo_messages[3]);
   });
 
   recorder.addEventListener( "dataAvailable", function(e){
@@ -120,14 +122,12 @@ function initRecording() {
 }
 
 
-function demoStageOne() {
-  return "Welcome to WaveCastr! To see how it works, simply copy the url (we've made it easy with the 'Share Link' button) into an incognito window or another browser, and enter your name.\nOnce you've joined, feel free to try our chat feature, which was built with ActionCable.\n\nOnce you're ready, activate everyone's mics with the button below, and grant any permissions necessary (spoiler: Safari doesn't support our app quite yet).\n\n"
-}
+var demo_messages = [
+  "Welcome to WaveCastr!",
+  "You can add additional users by simply copying the url (we've made it easy with the 'Share Link' button) into an incognito window or another browser and enter your name.",
+  "Once you're ready, activate everyone's mics with the button below and select yes when your browser asks for permission to access your microphone",
+  "Congrats, your mic is armed and ready to go! Once everyone's permissions have been granted, your guests' icons will turn green. Press record, and both browsers will a record separate audio track for each guest. Push stop and those tracks will be automatically uploaded to our AWS server.",
+  "Nice! You've recorded your first podcast with WaveCastr! Once the tracks are ready, you should see links to download them below. Your editor can now download them and get started on post-production. Thanks for trying WaveCastr!"
+]
 
-function demoStageTwo() {
-  return "Congrats, your mic is armed and ready to go! Once everyone's permissions have been granted, your guests' icons will turn g reen. Press record, and both browsers will record separate audio tracks for each guest. Push stop, and those tracks will be uploaded to our AWS server and made available to download as soon as they're ready.\n\n"
-}
 
-function demoStageThree() {
-  return "Nice! You've recorded your first podcast with WaveCastr! Once the tracks are ready, you should see links to download them below. You can now upload them to the audio editor of your choice for post-production. Thanks for trying WaveCastr!\n"
-}
