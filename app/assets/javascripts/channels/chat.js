@@ -17,6 +17,11 @@ App.chat = App.cable.subscriptions.create({channel: "ChatChannel", lobby: lobby}
     var chatContainer = document.getElementById('chat-container');
     chatContainer.innerHTML = chatContainer.innerHTML + '<br>' + message;
     chatContainer.scrollTop = chatContainer.scrollHeight;
+  },
+
+  clearChatBox: function() {
+    var chatContainer = document.getElementById('chat-container');
+    chatContainer.innerHTML = "";
   }
 });
 
