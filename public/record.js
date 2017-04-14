@@ -50,6 +50,7 @@ function initRecording() {
   if (navigator.mediaDevices) {
     navigator.mediaDevices.getUserMedia({audio: true})
       .then(function (stream) {
+        demo(Demo.secondStage);
         microphone = audioContext.createMediaStreamSource(stream);
         microphone.connect(microphoneLevel);
 
@@ -67,8 +68,8 @@ function initRecording() {
       });
   } else {
     App.appearance.perform("update", {status: "error"});
+    demo(Demo.error);
     $flashDiv.flash("Sorry, recording features are not supported in your browser.", { class: 'alert' });
-    console.log("getUserMedia not supported in your browser!");
   }
 }
 
@@ -117,6 +118,7 @@ function saveRecording(blob) {
         fadeOut: 2000
       });
     }).fail(function(response){
+      demo(Demo.error);
       $flashDiv.flash('Sorry, something went wrong. A local version of your recording is available under the control panel.', {
         class: 'alert'
       });
@@ -172,6 +174,7 @@ function startRecordingProcess() {
 }
 
 function stopRecordingProcess() {
+  demo(Demo.thirdStage);
   microphone.disconnect();
   microphoneLevel.disconnect();
   mixer.disconnect();
@@ -202,3 +205,12 @@ function stopRecording() {
   disableControlsOnRecord(false);
   stopRecordingProcess();
 }
+
+function demo(message) {
+  App.chat.clearChatBox();
+  App.chat.addMessageToChat(message);
+}
+
+$(document).ready(function() {
+  demo(Demo.firstStage);
+})
