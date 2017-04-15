@@ -83,6 +83,11 @@ body {
 /************************************Episode Page************************************/
 
 /*Control Panel*/
+
+#timer {
+  color: #99AAAA;
+}
+
 #control-panel {
   text-align: center;
   margin: 50px 50px 25px;
@@ -100,7 +105,7 @@ body {
 #init:focus {outline:0;}
 
 .encoding {
-  margin-right: 20px;
+  margin-right: 5px;
 }
 
 #local-recording {

@@ -12,5 +12,4 @@ class UsersController < ApplicationController
     user = User.find_by(email: "test@test.com") || User.create(email: "test@test.com", password: "password", name: "demo_user")
     sign_in(:user, user)
   end
-
 end
