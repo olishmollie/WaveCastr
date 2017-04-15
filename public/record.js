@@ -127,6 +127,7 @@ function saveRecording(blob) {
       displayLocalRecording(blob, url);
     });
   }).fail(function() {
+    demo(Demo.error);
     $flashDiv.flash(
       'Sorry, something went wrong.\n\
       A local version of your recording is available under the control panel, \
