@@ -49,6 +49,7 @@ function initRecording() {
     navigator.mediaDevices.getUserMedia({audio: true})
       .then(function (stream) {
         demo(Demo.secondStage);
+        timer.reset();
         microphone = audioContext.createMediaStreamSource(stream);
         microphone.connect(microphoneLevel);
 
@@ -111,6 +112,7 @@ function saveRecording(blob) {
       $flashDiv.flash("Your recording was successfully saved.", {
         fadeOut: 2000
       });
+      init.disabled = false;
     }).fail(function(){
       demo(Demo.error);
       $flashDiv.flash(
@@ -133,8 +135,11 @@ function saveRecording(blob) {
       });
     displayLocalRecording(blob, url);
   });
+<<<<<<< HEAD
 start.disabled = true;
   stopButton.disabled = true;
+=======
+>>>>>>> master
 }
 
 function displayLocalRecording(blob, url) {
@@ -160,6 +165,7 @@ function getBuffers(event) {
 }
 
 function startRecordingProcess() {
+  App.appearance.perform("update", {status: "recording"});
   timer.start();
   var bufSz = defaultBufSz;
 
@@ -184,6 +190,7 @@ function startRecordingProcess() {
 
 function stopRecordingProcess() {
   demo(Demo.thirdStage);
+  App.appearance.perform("update", {status: "stopping"});
   microphone.disconnect();
   microphoneLevel.disconnect();
   mixer.disconnect();
@@ -198,6 +205,12 @@ function disableControlsOnRecord(disabled) {
   start.disabled = disabled;
 }
 
+function disableAllControls() {
+  init.disabled = true;
+  start.disabled = true;
+  stopButton.disabled = true;
+}
+
 function startRecording() {
   disableControlsOnRecord(true);
   stopButton.disabled = false;
@@ -206,7 +219,7 @@ function startRecording() {
 
 function stopRecording() {
   timer.stop();
-  disableControlsOnRecord(false);
+  disableAllControls();
   stopRecordingProcess();
 }
 
