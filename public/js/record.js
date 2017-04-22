@@ -1,4 +1,5 @@
 var $flashDiv = $('#flash'),
+  $micLevelControl = $('#mic-level'),
   encoder = $('#encoder').text(),
   timerDiv = document.getElementById('timer'),
   timer = new Timer(timerDiv),
@@ -98,6 +99,13 @@ var microphone, // created on init
   input = audioContext.createGain(),
   processor = undefined;      // created on recording
 
+microphoneLevel.gain.value = (40 / 100) * (40 / 100);
+
+$micLevelControl.on('input', function(e) {
+  var level = $micLevelControl[0].valueAsNumber / 100;
+  microphoneLevel.gain.value = level * level;
+});
+
 function initRecording() {
   if (navigator.mediaDevices) {
     navigator.mediaDevices.getUserMedia({audio: true})
@@ -107,7 +115,7 @@ function initRecording() {
 
       microphone = audioContext.createMediaStreamSource(stream);
       microphone.connect(microphoneLevel);
-      microphone.connect(audioContext.destination);
+      microphoneLevel.connect(audioContext.destination);
      
       if (!isHost()) {
         connection.createAnswer().then(function(answer) {
@@ -238,12 +246,18 @@ function getBuffers(event) {
   return buffers;
 }
 
+function disableMicLevelControl() {
+  $micLevelControl.addClass('disabled');
+  $('.fa-microphone').removeClass('text-white').addClass('text-gray');
+}
+
 function startRecordingProcess() {
   App.appearance.perform("update", {status: "recording"});
   timer.start();
+  disableMicLevelControl();
+
   var bufSz = defaultBufSz;
 
-  microphoneLevel.gain.value = 1;
   microphoneLevel.connect(mixer);
   mixer.connect(input);
 

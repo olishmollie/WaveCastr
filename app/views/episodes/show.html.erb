@@ -1,4 +1,4 @@
-<!-- ChatBox & Guests -->
+<!-- Chatbox & Guests -->
 <div class="row">
   <div class="col-md-3" id="left-container">
     <% if is_host?(@episode) %>
@@ -30,11 +30,14 @@
       <button id="start" class="btn btn-primary" disabled><span class="glyphicon glyphicon-record"></span> Record</button>
       <button id="stopButton" class="btn btn-primary" disabled><span class="glyphicon glyphicon-stop"></span> Stop</button>
     </div>
+    <div id="mic-controls" class="col-md-4 col-md-offset-4">
+      <input type="range" class="mt-10 mb-10" id="mic-level" min="0" max="100" value="0"/>
+      <i class="fa fa-microphone fa-2x text-white" aria-hidden="true"></i>
+    </div>
   </div>
-  <!-- Spinner -->
-  <div id="local-recording" class="text-center">
-  </div>
+  <!-- Local-Recording/Spinner -->
 </div>
+<div id="local-recording" class="text-center"></div>
 
 <!-- Track List -->
 <% if is_host?(@episode) %>

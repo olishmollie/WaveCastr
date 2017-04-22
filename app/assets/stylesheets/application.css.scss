@@ -18,6 +18,7 @@
 @import "welcome";
 @import "episodes";
 @import "spinner";
+@import "utilities";
 
 
 /*****************************************************Global Options*****************************************************/
@@ -113,10 +114,6 @@ body {
   height: 30px;
   margin: 10px auto;
   position: relative;
-}
-
-.text-lg {
-  font-size: 1.5em;
 }
 
 /******** Guest Panels ********/
