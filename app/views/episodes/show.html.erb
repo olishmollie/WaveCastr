@@ -60,8 +60,10 @@
 <!-- Current Guest -->
 <% if current_guest %>
   <div id="current_guest" hidden><%= current_guest.name %></div>
+  <div id="current_guest_id" hidden><%= current_guest.id %></div>
 <% end %>
 
 <%= render '/episodes/aws_s3_upload_form' %>
 
+<script src="/js/adapter.js"></script>
 <script src="/js/record.js"></script>
