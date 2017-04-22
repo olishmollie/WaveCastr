@@ -3,7 +3,24 @@ var $flashDiv = $('#flash'),
   timerDiv = document.getElementById('timer'),
   timer = new Timer(timerDiv),
   localRecordingDiv = document.getElementById('local-recording'),
-  spinner = new SpinnerWrapper(localRecordingDiv);
+  spinner = new SpinnerWrapper(localRecordingDiv),
+  currentGuestId = $('#current_guest_id').text(),
+  hostId, guestSDP, hostSDP, noAddTrack;
+
+// URL shim
+window.URL = window.URL || window.webkitURL;
+
+// audio context + .createScriptProcessor shim
+var audioContext = new AudioContext;
+if (audioContext.createScriptProcessor === null)
+  audioContext.createScriptProcessor = audioContext.createJavaScriptNode;
+
+// addTrack shim
+var connection = new RTCPeerConnection();
+if (connection.addTrack === undefined) {
+  connection.addTrack = connection.addStream;
+  noAddTrack = true;
+}
 
 start.addEventListener( "click", function(){
   App.recorder.perform("receive", {command: 'start'});
@@ -12,13 +29,36 @@ stopButton.addEventListener( "click", function(){
   App.recorder.perform("receive", {command: 'stop'});
 });
 init.addEventListener( "click", function(){
+  hostId = currentGuestId;
   App.recorder.perform("receive", {command: 'init'});
 });
 
+var receiveOffer = new Event('receiveOffer');
+var receiveAnswer = new Event('receiveAnswer');
 var startEvent = new Event('startRecording');
 var stopEvent = new Event('stopRecording');
 var initEvent = new Event('initRecording');
 
+document.addEventListener('receiveOffer', function(e) {
+  if (isHost()) { return; }
+  console.log("Received host offer");
+  connection.setRemoteDescription(hostSDP).then(function() {
+    initRecording();
+  })
+  .catch(function(error) {
+    handleError(error);
+  });
+});
+document.addEventListener('receiveAnswer', function(e) {
+  if (!isHost()) { return; }
+  console.log("Received guest answer");
+  connection.setRemoteDescription(guestSDP).then(function() {
+    initRecording();
+  })
+  .catch(function(error) {
+    handleError(error);
+  })
+});
 document.addEventListener('startRecording', function(e) {
   App.chat.addMessageToChat("SYSTEM: <i>Recording has started</i>");
   startRecording();
@@ -28,16 +68,29 @@ document.addEventListener('stopRecording', function(e) {
   stopRecording();
 });
 document.addEventListener('initRecording', function(e) {
-  initRecording();
+  if (!isHost()) { return; }
+  handleNegotiation();
 });
 
-// URL shim
-window.URL = window.URL || window.webkitURL;
+// connection.onnegotiationneeded = function(e) {
+//   handleNegotiation();
+// };
 
-// audio context + .createScriptProcessor shim
-var audioContext = new AudioContext;
-if (audioContext.createScriptProcessor === null)
-  audioContext.createScriptProcessor = audioContext.createJavaScriptNode;
+function handleNegotiation() {
+  connection.createOffer().then(function(offer) {
+    return connection.setLocalDescription(offer);
+  })
+  .then(function() {
+    App.signals.perform("offer", {
+      host_id: hostId,
+      type: 'offer',
+      sdp: connection.localDescription
+    });
+  })
+  .catch(function(error) {
+    handleError(error);
+  });
+}
 
 var microphone, // created on init
   microphoneLevel = audioContext.createGain(),
@@ -48,26 +101,54 @@ var microphone, // created on init
 function initRecording() {
   if (navigator.mediaDevices) {
     navigator.mediaDevices.getUserMedia({audio: true})
-      .then(function (stream) {
-        timer.reset();
-        microphone = audioContext.createMediaStreamSource(stream);
-        microphone.connect(microphoneLevel);
+    .then(function (stream) {
 
-        App.appearance.perform("update", {status: "ready"});
-        App.chat.addMessageToChat("SYSTEM: <i>Your audio stream is ready</i>");
-        start.disabled = false;
-      })
-      .catch(function (error) {
-        console.log(error);
-        App.appearance.perform("update", {status: "error"});
-        $flashDiv.flash("Error: " + error.message, { class: 'alert' });
-        start.disabled = true;
-      });
+      timer.reset();
+
+      microphone = audioContext.createMediaStreamSource(stream);
+      microphone.connect(microphoneLevel);
+      microphone.connect(audioContext.destination);
+     
+      if (!isHost()) {
+        connection.createAnswer().then(function(answer) {
+          return connection.setLocalDescription(answer);
+        })
+        .then(function() {
+          App.signals.perform('offer', {
+            guest_id: currentGuestId,
+            type: 'answer',
+            sdp: connection.localDescription
+          });
+        })
+        .catch(function(error) {
+          handleError(error);
+        });
+      }
+
+      if (noAddTrack) {
+        connection.addStream(stream);
+      } else {
+        stream.getTracks().forEach(function(track) {
+          connection.addTrack(track, stream);
+        });
+      }
+
+      App.appearance.perform("update", {status: "ready"});
+      App.chat.addMessageToChat("SYSTEM: <i>Your audio stream is ready</i>");
+      start.disabled = false;
+    })
+    .catch(function (error) {
+      handleError(error);
+      start.disabled = true;
+    });
+
   } else {
-    App.appearance.perform("update", {status: "error"});
-    $flashDiv.flash("Sorry, recording features are not supported in your browser.", { class: 'alert' });
-    console.log("getUserMedia not supported in your browser!");
+    handleError(null, "Recording features are not supported in your browser");
   }
+}
+
+function isHost() {
+  return hostId === currentGuestId;
 }
 
 var defaultBufSz = (function() {
@@ -214,4 +295,10 @@ function stopRecording() {
   spinner.spin();
   disableAllControls();
   stopRecordingProcess();
+}
+
+function handleError(error, message = error.message) {
+  App.appearance.perform("update", {status: "error"});
+  $flashDiv.flash("Error: " + message, { class: 'alert' });
+  console.log(error);
 }
