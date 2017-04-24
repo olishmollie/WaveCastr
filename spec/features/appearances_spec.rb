@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.feature "Appearances", type: :feature, js: true do
-  let!(:user) { create(:user) }
+  let!(:user) { double(:user, name: "demo_user") }
 
   before(:each) do
-    login(user)
+    visit '/'
     create_episode
     @episode_url = page.current_url
   end
