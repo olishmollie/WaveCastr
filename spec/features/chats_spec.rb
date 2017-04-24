@@ -1,16 +1,12 @@
 require 'rails_helper'
 
 RSpec.feature "Chats", type: :feature do
-  let!(:user) { create(:user) }
-  let!(:episode) { build(:episode) }
+  let!(:user) { double(:user, name: "demo_user") }
 
   before(:each) do
-    user.episodes << episode
-    user.save
-    login(user)
+    visit '/'
     at_dashboard?
-
-    click_on("#{episode.name}")
+    create_episode
     at_lobby?
   end
 
