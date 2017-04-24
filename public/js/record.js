@@ -225,6 +225,6 @@ function demo(message) {
   App.chat.addMessageToChat(message);
 }
 
-$(document).ready(function() {
+function initDemo() {
   demo(Demo.firstStage);
-})
+}

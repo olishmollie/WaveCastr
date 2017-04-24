@@ -62,10 +62,13 @@
 
 <%= render '/episodes/aws_s3_upload_form' %>
 
+<script src="/js/demo.js"></script>
+<script src="/js/record.js"></script>
 <% if unregistered_guest?(@episode) %>
   <script src="/js/registerGuest.js"></script>
 <% else %>
-  <script>initiateActionCable();</script>
+    <script>
+      initiateActionCable();
+      initDemo();
+    </script>
 <% end %>
-<script src="/js/demo.js"></script>
-<script src="/js/record.js"></script>

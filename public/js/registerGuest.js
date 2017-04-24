@@ -22,6 +22,7 @@ $(window).load(function() {
         $registerGuestModal.modal('hide');
         document.getElementById('current_guest').innerText = response;
         initiateActionCable();
+        initDemo();
       })
       .fail(function(error) {
         $registerGuestModal.modal('hide');
