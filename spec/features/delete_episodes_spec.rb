@@ -11,7 +11,7 @@ RSpec.feature "DeleteEpisodes", type: :feature do
     login(user)
   end
 
-  scenario "user can delete episodes from dashboard" do
+  xscenario "user can delete episodes from dashboard" do
     expect(page).to have_content("My test podcast")
     within(first('.episode')) do
       click_on("Delete")

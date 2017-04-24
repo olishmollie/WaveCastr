@@ -13,12 +13,12 @@ RSpec.feature "New episodes", type: :feature do
     end
   end
 
-  scenario "user clicks on new episode and is presented with a modal form" do
+  xscenario "user clicks on new episode and is presented with a modal form" do
     click_on('New Episode')
     expect(page).to have_content('Go')
   end
 
-  scenario "user creates a new episode and sees herself as host" do
+  xscenario "user creates a new episode and sees herself as host" do
     click_on('New Episode')
     within('#new_episode') do
       fill_in 'episode[name]', with: 'Test Episode'
