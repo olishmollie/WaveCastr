@@ -1,4 +1,5 @@
 function subscribeToChat() {
+  var chatContainer = document.getElementById('chat-container');
   App.chat = App.cable.subscriptions.create({channel: "ChatChannel", lobby: lobby}, {
     connected: function() {
     },
@@ -12,9 +13,12 @@ function subscribeToChat() {
     },
 
     addMessageToChat: function(message) {
-      var chatContainer = document.getElementById('chat-container');
       chatContainer.innerHTML = chatContainer.innerHTML + '<br>' + message;
       chatContainer.scrollTop = chatContainer.scrollHeight;
+    },
+
+    clearChatBox: function() {
+      chatContainer.innerHTML = '';
     }
   });
 
