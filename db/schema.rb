@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20170419031105) do
     t.integer  "host_id"
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
-    t.string   "encoder",       limit: 10, default: "mp3"
+    t.string   "encoder",       limit: 10, default: "mp3", null: false
   end
 
   create_table "guests", force: :cascade do |t|
