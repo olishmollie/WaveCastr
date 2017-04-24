@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
-  mount JasmineRails::Engine => '/specs' if defined?(JasmineRails)
-
-  root to: 'users#show'
+  root to: 'welcome#index'
   devise_for :users
 
   resources :users, only: [:show]
