@@ -58,12 +58,15 @@
 <div id="encoder" hidden><%= @episode.encoder %></div>
 
 <!-- Current Guest -->
-<% if current_guest %>
-  <div id="current_guest" hidden><%= current_guest.name %></div>
-  <div id="current_guest_id" hidden><%= current_guest.id %></div>
-<% end %>
+<div id="current_guest" hidden><%= current_guest.name if current_guest %></div>
 
 <%= render '/episodes/aws_s3_upload_form' %>
 
+<% if unregistered_guest?(@episode) %>
+  <script src="/js/registerGuest.js"></script>
+<% else %>
+  <script>initiateActionCable();</script>
+<% end %>
 <script src="/js/adapter.js"></script>
 <script src="/js/record.js"></script>
+
