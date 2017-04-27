@@ -68,7 +68,9 @@
   <script src="/js/registerGuest.js"></script>
 <% else %>
     <script>
-      initiateActionCable();
-      initDemo();
+      $(document).ready(function() {
+        initiateActionCable();
+        initDemo();
+      })
     </script>
 <% end %>
