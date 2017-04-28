@@ -21,7 +21,9 @@ $(window).load(function() {
       .done(function(response) {
         $registerGuestModal.modal('hide');
         document.getElementById('current_guest').innerText = response;
+        App.appearance.unsubscribe();
         initiateActionCable();
+        subscribeToAllChannels();
         initDemo();
       })
       .fail(function(error) {
@@ -29,5 +31,8 @@ $(window).load(function() {
         $('#flash').flash('ERROR: ' + error);
       });
   });
+
+  initiateActionCable();
+  subscribeToAppearances();
 });
 

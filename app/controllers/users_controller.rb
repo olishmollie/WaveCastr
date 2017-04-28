@@ -1,6 +1,5 @@
 class UsersController < ApplicationController
-  # before_action :authenticate_user!
-  before_action :signin_test_user
+  before_action :signin_test_user, :authenticate_user!
 
   def show
     @episode = Episode.new

@@ -67,8 +67,9 @@
 <% if unregistered_guest?(@episode) %>
   <script src="/js/registerGuest.js"></script>
 <% else %>
-    <script>
-      initiateActionCable();
-      initDemo();
-    </script>
+  <script>
+    initiateActionCable();
+    subscribeToAllChannels();
+    initDemo();
+  </script>
 <% end %>

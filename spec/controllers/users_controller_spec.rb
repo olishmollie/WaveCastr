@@ -10,7 +10,7 @@ RSpec.describe UsersController, type: :controller do
     expect(response).to have_http_status :success
   end
 
-  it "returns redirect 302 when not logged in" do
+  xit "returns redirect 302 when not logged in" do
     get :show, params: { id: user.id }     
     expect(response).to have_http_status :found
     expect(response.location).to eq new_user_session_url
